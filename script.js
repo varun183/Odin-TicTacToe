@@ -1,73 +1,56 @@
-//SETUP THE GAMEBOARD USING IIFE i.e Module pattern(NEED ONLY SINGLE INSTANCE)
+const gameBoardModule = (() => {
+    let gameBoard = ["", "", "", "", "", "", "", "", ""]
 
-let gameBoardModule = (function(){
+    const render = () => {
+        const squares = document.querySelectorAll(".js-grid-box");
 
-    let gameBoard =["O"];
-    
+        squares.forEach((square)=>{
+            square.addEventListener("click",Game.handleClick);
 
-    return {gameBoard};
+        })
 
+    }
+
+    return {
+        render,
+    }
 })();
 
+const createPlayer = (name, mark) => {
+    return {
+        name, mark
+    }
+}
 
+const Game = (() => {
+    let players = [];
+    let currentPlayerIndex;
+    let gameOver;
 
-//SETUP DISPLAYCONTROLLER USING IIFE i.e Module pattern TO CONTROL TURN(NEED ONLY SINGLE INSTANCE)
+    const start = () => {
+        console.log("inside start")
+        players = [
+            createPlayer(document.querySelector("#player1-input").value, "X"),
+            createPlayer(document.querySelector("#player2-input").value, "O"),
 
-let displayControllerModule = (function(){
+        ]
 
-    const makeMove = document.querySelectorAll(".js-game-board-button");
+        currentPlayerIndex = 0;
+        gameOver = false;
+        gameBoardModule.render();
 
-    let index = 0;
-    makeMove.forEach(makeMoves=>{
-        makeMoves.dataset.linkedButton = index;
-        makeMoves.addEventListener("click",renderArrayToScreen);
+    }
 
+    const handleClick = (event)=>{
+        alert("you clicked");
+    }
 
-        function renderArrayToScreen(){
-            const gridBoxes = document.querySelectorAll(".js-grid-box");
-
-            let index = 0;
-
-            gridBoxes.forEach(gridBox =>{
-                gridBox.dataset.linkedButton = index;
-
-                if(gridBox.getAttribute("data-linked-button")==makeMoves.getAttribute("data-linked-button")){
-
-                    gridBox.textContent = gameBoardModule.gameBoard;
-                    console.log("MAkeMoves linked",makeMoves.dataset.linkedButton);
-                    console.log("GridBox linked value...",gridBox.dataset.linkedButton);
-                }
-
-                index++;
-             })
-        }
-        index++;
-
-    })
-
-
-    let testFunc = () =>{console.log("Testing private func inside module object")};
-
-    return {makeMove};
-
+    return { start,handleClick }
 })();
 
+const startButton = document.querySelector(".js-start-btn");
+startButton.addEventListener("click", () => {
+    console.log("you cllicked")
+    Game.start();
 
-//SETUP PLAYERS WITH FACTORY FUNCTION
-
-let createPlayer = (playerName,playerNumber,assignedXO) =>{
-
-    let getPlayerName =() =>{console.log("This is player:" + playernumber +"...."+playerName); }
-
-    return {getPlayerName,playerName,playerNumber,assignedXO}
-
-};
-
-
-
-let Varun = createPlayer("Varun",1,"X");
-let Virat = createPlayer("Virat",2,"O");
-
-
-
-
+})
